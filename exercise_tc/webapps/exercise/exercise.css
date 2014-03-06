@@ -1,0 +1,22 @@
+/** Add css rules here for your application. */
+
+.newLine {
+    display: block;
+}
+
+.paddingButtonPanel {
+    padding-bottom: 20px;
+}
+
+.paddingButton {
+    padding-right: 10px;
+}
+
+.paddingTable {
+    padding-bottom: 20px;
+}
+
+.floatLeft {
+    float: left;
+}
+

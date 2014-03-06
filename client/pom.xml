@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>exercise</groupId>
+        <artifactId>exercise</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>client</artifactId>
+    <packaging>war</packaging>
+
+    <prerequisites>
+        <maven>${mavenVersion}</maven>
+    </prerequisites>
+
+    <properties>
+        <gwt.module>exercise.Exercise</gwt.module>
+        <gwt.draftCompile>false</gwt.draftCompile>
+        <gwt.style>OBF</gwt.style>
+        <gwt.genParam>false</gwt.genParam>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>shared</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>shared</artifactId>
+            <version>${project.version}</version>
+            <classifier>sources</classifier>
+            <scope>provided</scope>
+        </dependency>
+
+		<dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt.inject</groupId>
+            <artifactId>gin</artifactId>
+            <version>1.5.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.8.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.1.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-dev</artifactId>
+            <version>${gwt.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <configuration>
+                    <module>${gwt.module}</module>
+                    <strict>true</strict>
+                    <draftCompile>${gwt.draftCompile}</draftCompile>
+                    <style>${gwt.style}</style>
+                    <genParam>${gwt.genParam}</genParam>
+                    <noserver>true</noserver>
+                </configuration>
+            </plugin>        
+		</plugins>
+	</build>
+
+    <profiles>
+        <profile>
+            <id>draft</id>
+            <activation>
+                <property>
+                    <name>draft</name>
+                </property>
+            </activation>
+            <properties>
+                <gwt.module>exercise.Application_dev</gwt.module>
+                <gwt.draftCompile>true</gwt.draftCompile>
+                <gwt.style>PRETTY</gwt.style>
+            </properties>
+        </profile>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <property>
+                    <name>dev</name>
+                </property>
+            </activation>
+            <build>
+                <!-- FIXME: workaround for MGWT-332 -->
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>add-shared-sources-to-classpath</id>
+                                <!-- After 'process-resources' so they're not copied to ${project.build.outputDirectory} -->
+                                <!-- But before 'compile' to make them available to 'gwt:run' -->
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>add-resource</goal>
+                                </goals>
+                                <configuration>
+                                    <resources>
+                                        <!-- Only sources, resources are already in the classpath, by definition -->
+                                        <resource>
+                                            <directory>${basedir}/../shared/src/main/java</directory>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
